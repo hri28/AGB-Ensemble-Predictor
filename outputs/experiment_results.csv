@@ -1,0 +1,5 @@
+Experiment ID,Description,R2,MAE,MSE
+Exp01,Random Forest on polynomial Landsat features (no FS),0.7549057364156766,51.914130573015875,5182.05452931396
+
+Exp02,XGBoost on polynomial Landsat (no FS),0.7567826672037745,50.59742605806381,5142.370378614425
+Exp03,Random Forest with RFE (top 20 features) on polynomial Landsat,0.7573636477941471,50.35578528730159,5130.086643141571

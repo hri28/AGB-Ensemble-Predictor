@@ -2,8 +2,9 @@
     "model_type": "random_forest",
     "n_estimators": 100,
     "feature_selection": "rfe",
-    "ensemble_method": "nnls",
-    "dataset": "landsat",
+    "ensemble_method": "none",
+    "dataset": "poly_landsat",
     "test_size": 0.1,
     "random_seed": 42
-}
+  }
+  
