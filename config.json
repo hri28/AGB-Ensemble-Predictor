@@ -1,7 +1,7 @@
 {
-    "model_type": "random_forest",
+    "model_type": "xgboost",
     "n_estimators": 100,
-    "feature_selection": "rfe",
+    "feature_selection": "autoencoder+raw",
     "ensemble_method": "none",
     "dataset": "poly_landsat",
     "test_size": 0.1,
