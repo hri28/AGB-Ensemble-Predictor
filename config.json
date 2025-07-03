@@ -3,7 +3,7 @@
     "n_estimators": 100,
     "feature_selection": "autoencoder+raw",
     "ensemble_method": "none",
-    "dataset": "poly_landsat",
+    "dataset": "lidar",
     "test_size": 0.1,
     "random_seed": 42
   }

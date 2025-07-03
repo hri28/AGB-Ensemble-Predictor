@@ -20,7 +20,8 @@ class ModelTrainer:
     def load_data(self):
             dataset_path_map = {
                 "landsat": "data/processed/landsat.csv",
-                "poly_landsat": "data/processed/prf2000_mean_raw_Aug_9input_QMinMax.csv"
+                "poly_landsat": "data/processed/prf2000_mean_raw_Aug_9input_QMinMax.csv",
+                "lidar": "data/processed/lidar.csv"
             }
             path = dataset_path_map.get(self.config["dataset"])
             if path is None:
@@ -56,7 +57,7 @@ class ModelTrainer:
             # --- Autoencoder + Raw Fusion ---
             if self.config["feature_selection"] == "autoencoder+raw":
                 print("Training autoencoder...")
-                ae = AutoencoderFeatureExtractor(input_dim=X_train.shape[1], latent_dim=8)
+                ae = AutoencoderFeatureExtractor(input_dim=X_train.shape[1], latent_dim=16)
                 ae.train(X_train)
 
                 print("Extracting deep features...")
@@ -96,8 +97,8 @@ class ModelTrainer:
         print("Average MSE:", np.mean(mse_scores))
 
         logger.log(
-            exp_id="Exp011",
-            description="XGBoost on raw + tuned sparse AE latent features (16D, L1=1e-6)",
+            exp_id="ExpL05",
+            description="XGBoost on raw + sparse AE latent features (16D, L1=1e-6)",
             r2=np.mean(r2_scores),
             mae=np.mean(mae_scores),
             mse=np.mean(mse_scores)
