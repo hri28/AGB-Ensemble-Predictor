@@ -19,14 +19,19 @@ class ModelTrainer:
 
     def load_data(self):
             dataset_path_map = {
-                "landsat": "data/processed/landsat.csv",
-                "poly_landsat": "data/processed/prf2000_mean_raw_Aug_9input_QMinMax.csv",
-                "lidar": "data/processed/lidar.csv"
-            }
+                "landsat_p": "data/processed/1_prf2000_mean_raw_Aug_9input_PMinMax.csv",
+                "landsat_q": "data/processed/2_prf2000_mean_raw_Aug_9input_QMinMax.csv",  # Already used
+                "lidar_p": "data/processed/3_tvol_lidarLivePMinMax.csv",
+                "lidar_q": "data/processed/4_tvol_lidarLiveQMinMax.csv",
+                "lidar_q_top_selected_features" : "data/processed/lidar_q_top20_modelselect.csv"
+                }
             path = dataset_path_map.get(self.config["dataset"])
             if path is None:
                 raise ValueError("Invalid dataset selected.")
-            return pd.read_csv(path)
+            
+            df = pd.read_csv(path)
+            df = df.drop(columns=[col for col in ['origin', 'Origin', 'status', 'Status'] if col in df.columns])
+            return df
 
 
     def run_pipeline(self):
@@ -68,11 +73,14 @@ class ModelTrainer:
 
             # --- RFE ---
             if self.config["feature_selection"] == "rfe":
-                selector = RFE(RandomForestRegressor(n_estimators=50), n_features_to_select=20)
+                selector = RFE(RandomForestRegressor(n_estimators=10), n_features_to_select=20)
                 selector.fit(X_train, y_train)
-                selected_features = X.columns[selector.get_support()]
+                selected_features = X_train.columns[selector.get_support()]
                 print("Selected features by RFE:")
                 print(selected_features.tolist())
+                print(f"Training model on shape: {X_train.shape}")
+
+                #  Now transform
                 X_train = selector.transform(X_train)
                 X_test = selector.transform(X_test)
 
@@ -97,8 +105,8 @@ class ModelTrainer:
         print("Average MSE:", np.mean(mse_scores))
 
         logger.log(
-            exp_id="ExpL05",
-            description="XGBoost on raw + sparse AE latent features (16D, L1=1e-6)",
+            exp_id="ExpLiQ",
+            description="XGBoost on raw + SAE latent features",
             r2=np.mean(r2_scores),
             mae=np.mean(mae_scores),
             mse=np.mean(mse_scores)
